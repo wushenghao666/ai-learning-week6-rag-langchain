@@ -155,6 +155,22 @@ data/
 
 ![本地页面中的真实回答、引用与对应检索片段](assets/week6/local-rag.png)
 
+![补充后的控件说明与实时处理记录](assets/week6/whitebox-ui.png)
+
+### 在本机同时预览应用和博客
+
+问答应用使用 8006 端口，博客预览使用 8007 端口，两者分别启动。先在应用中试一个示例，观察预期结果、检索排名与原文，再回到博客对照实验记录，会更容易理解每个数字对应哪一步。
+
+博客使用 Markdown 保存文章，运行 build.py 后生成页面读取的 posts.json 索引，再启动静态文件服务：
+
+```powershell
+Set-Location 'C:\Users\wushe\Documents\ChatGPT\AI-learning'
+& 'C:\Users\wushe\Documents\ChatGPT\week 6\.venv\Scripts\python.exe' build.py
+& 'C:\Users\wushe\Documents\ChatGPT\week 6\.venv\Scripts\python.exe' -m http.server 8007 --bind 127.0.0.1
+```
+
+打开 http://127.0.0.1:8007/#post=2026-10-25-personal-rag 即可预览本篇。文章和配图都保存在本地；修改正文后刷新页面，修改标题或摘要后需要重新生成索引。
+
 模块分别负责资料、向量、检索、生成、应用入口和 HTTP 适配，命令行、页面与评估共用同一套问答服务。完整交互、会话管理和公网部署留给第七周。
 
 ```powershell
