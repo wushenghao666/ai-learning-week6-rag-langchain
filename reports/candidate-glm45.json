@@ -1,0 +1,126 @@
+{
+  "question": "第五周为什么适配 Chat Completions？",
+  "method": "hybrid",
+  "k": 6,
+  "hits": [
+    {
+      "id": "w5-readme:21:134",
+      "doc_id": "w5-readme",
+      "week": 5,
+      "source": "week 5/ai-learning-week5-agent-dashboard/README.md",
+      "snapshot": "week5-readme.md",
+      "title": "第五周：Agent 可视化任务控制台",
+      "section": "第五周：Agent 可视化任务控制台",
+      "start": 21,
+      "end": 134,
+      "text": "\n在第四周的 Planner、Session、工具白名单和依赖执行器上增加 Web 界面。支持学习、作品集项目规划、面试准备和笔记整理。模型负责规划任务，本地工具输出摘要、清单、时间预算和复盘提醒；完成率统计工具执行进度。\n\n",
+      "rank": 1,
+      "score": 0.030886
+    },
+    {
+      "id": "w5-readme:949:1103",
+      "doc_id": "w5-readme",
+      "week": 5,
+      "source": "week 5/ai-learning-week5-agent-dashboard/README.md",
+      "snapshot": "week5-readme.md",
+      "title": "第五周：Agent 可视化任务控制台",
+      "section": "第五周：Agent 可视化任务控制台 / 本地运行",
+      "start": 949,
+      "end": 1103,
+      "text": "sts/test_demo.cjs\n```\n\n11 项 Python 测试覆盖持久化、依赖、复盘、模拟警告恢复、会话隔离、空目标、非法编号、路径遍历和失败阻塞。Node 测试执行四类示例、刷新恢复、清空和失败依赖。Pages 工作流在发布前运行这些检查，发布后检查首页与四个静态资源的 HTTP 200。\n\n",
+      "rank": 2,
+      "score": 0.030415
+    },
+    {
+      "id": "w4-blog:4654:4874",
+      "doc_id": "w4-blog",
+      "week": 4,
+      "source": "AI-learning/posts/2026-10-11-agent-session.md",
+      "snapshot": "week4-blog.md",
+      "title": "第四周：让学习 Agent 记住进度并继续执行",
+      "section": "本周真正理解了什么 / 第五周计划：做成可视化 Web 应用",
+      "start": 4654,
+      "end": 4874,
+      "text": "\n第五周准备给这个 Agent 加一个本地 Web 界面。页面提供学习目标输入、规则规划与模型规划切换、任务依赖图、逐步执行按钮、进度指标和工具调用时间线。界面直接调用现有的 `Session`、`Planner`、`run_session()` 和 `review()`，每次操作后读取并保存同一份会话文件。先完成单用户本地版本，再检查重复点击、失败任务和刷新页面后的状态恢复。项目完成后，用几组固定目标演示从创建计划到复盘的完整过程。\n",
+      "rank": 3,
+      "score": 0.029437
+    },
+    {
+      "id": "w5-blog:4701:4829",
+      "doc_id": "w5-blog",
+      "week": 5,
+      "source": "AI-learning/posts/2026-10-18-agent-dashboard.md",
+      "snapshot": "week5-blog.md",
+      "title": "第五周：把学习 Agent 做成可视化 Web 应用",
+      "section": "修复后的回归结果",
+      "start": 4701,
+      "end": 4829,
+      "text": "错误供检查。\n\n第五周完成后，第四周的会话和执行逻辑已经接到了可操作的页面上。我可以直接查看任务草案、依赖关系、工具参数和结果，遇到失败时也能沿着记录找到原因。真实模型接入后，任务数量和时间预算都出现过需要修复的问题，重复测试帮助我把这些问题逐项找出来。\n",
+      "rank": 4,
+      "score": 0.029274
+    },
+    {
+      "id": "w4-blog:3522:3780",
+      "doc_id": "w4-blog",
+      "week": 4,
+      "source": "AI-learning/posts/2026-10-11-agent-session.md",
+      "snapshot": "week4-blog.md",
+      "title": "第四周：让学习 Agent 记住进度并继续执行",
+      "section": "本周真正理解了什么",
+      "start": 3522,
+      "end": 3780,
+      "text": "\n这周我把第三周的单轮 Agent 延伸成了一份可继续推进的学习会话。Agent 的重点从一次规划和一次工具调用，扩展到状态保存、依赖判断、失败记录和复盘指标。任务状态让程序知道已经完成什么，依赖关系让程序知道现在能做什么，事件记录让程序能解释为什么得到这个结果。\n\n当前版本仍然使用规则规划器和本地工具，运行过程可以离线复现。后续接入真实模型时，模型可以负责提出任务草案，程序继续负责校验任务结构、检查工具参数、保存状态和统计结果。我下一步会准备一组固定学习目标，比较不同目标下的规划结果，并加入人工确认步骤。\n\n",
+      "rank": 5,
+      "score": 0.028814
+    },
+    {
+      "id": "w5-blog:2110:2486",
+      "doc_id": "w5-blog",
+      "week": 5,
+      "source": "AI-learning/posts/2026-10-18-agent-dashboard.md",
+      "snapshot": "week5-blog.md",
+      "title": "第五周：把学习 Agent 做成可视化 Web 应用",
+      "section": "接入并行科技的真实模型 / 调整接口和请求格式",
+      "start": 2110,
+      "end": 2486,
+      "text": "\n第四周的模型适配器调用 OpenAI Responses API。这周拿到并行科技平台的密钥后，核对文档发现该平台提供兼容 Chat Completions 的调用方式，需要调整地址、请求体和返回文本的读取位置。\n\n适配后的地址为 `https://llmapi.paratera.com/v1/chat/completions`，模型使用账户模型列表中确认过的 `GLM-4-Flash`。请求携带系统指令和用户目标，程序从返回消息中取出文本，再解析任务列表。项目同时保留 Responses 接口，通过环境变量选择调用方式。\n\n密钥放在后端环境变量中，前端只发送目标与模式标记。没有配置密钥时，开启模型选项会得到本地模拟计划，页面显示明确提示。关闭模型选项则使用规则规划。已经配置密钥但请求或校验失败时，页面展示错误及尝试记录，便于检查原因。\n\n",
+      "rank": 6,
+      "score": 0.016393
+    }
+  ],
+  "raw": "```json\n{\n  \"status\": \"answered\",\n  \"claims\": [\n    {\n      \"text\": \"第五周适配Chat Completions是为了接入并行科技平台的真实模型\",\n      \"evidence\": [\n        {\n          \"source\": 6,\n          \"quote\": \"第四周的模型适配器调用 OpenAI Responses API。这周拿到并行科技平台的密钥后，核对文档发现该平台提供兼容 Chat Completions 的调用方式，需要调整地址、请求体和返回文本的读取位置。\"\n        }\n      ]\n    }\n  ],\n  \"suggestions\": []\n}\n```",
+  "model": "GLM-4.5-Flash",
+  "mode": "real_api",
+  "usage": {
+    "completion_tokens": 887,
+    "prompt_tokens": 1371,
+    "total_tokens": 2258,
+    "prompt_tokens_details": {
+      "cached_tokens": 5
+    }
+  },
+  "status": "answered",
+  "claims": [
+    {
+      "text": "第五周适配Chat Completions是为了接入并行科技平台的真实模型",
+      "evidence": [
+        {
+          "source": 6,
+          "quote": "第四周的模型适配器调用 OpenAI Responses API。这周拿到并行科技平台的密钥后，核对文档发现该平台提供兼容 Chat Completions 的调用方式，需要调整地址、请求体和返回文本的读取位置。"
+        }
+      ]
+    }
+  ],
+  "suggestions": [],
+  "citations": [
+    {
+      "number": 6,
+      "chunk_id": "w5-blog:2110:2486",
+      "source": "AI-learning/posts/2026-10-18-agent-dashboard.md",
+      "section": "接入并行科技的真实模型 / 调整接口和请求格式",
+      "quote": "第四周的模型适配器调用 OpenAI Responses API。这周拿到并行科技平台的密钥后，核对文档发现该平台提供兼容 Chat Completions 的调用方式，需要调整地址、请求体和返回文本的读取位置。"
+    }
+  ],
+  "validation_ok": true,
+  "elapsed_ms": 31316.46
+}

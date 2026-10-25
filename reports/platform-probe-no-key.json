@@ -1,0 +1,26 @@
+{
+  "time_utc": "2026-10-25T03:07:36.846255+00:00",
+  "base": "https://llmapi.paratera.com/v1",
+  "key_configured": false,
+  "checks": [
+    {
+      "path": "/models",
+      "requested_model": null,
+      "ok": false,
+      "error": "HTTP 401: {\"error\":{\"message\":\"Authentication Error, No api key passed in.\",\"type\":\"auth_error\",\"param\":\"None\",\"code\":\"401\"}}"
+    },
+    {
+      "path": "/chat/completions",
+      "requested_model": "GLM-4-Flash",
+      "ok": false,
+      "error": "HTTP 401: {\"error\":{\"message\":\"Authentication Error, No api key passed in.\",\"type\":\"auth_error\",\"param\":\"None\",\"code\":\"401\"}}"
+    },
+    {
+      "path": "/embeddings",
+      "requested_model": "BAAI/bge-small-zh-v1.5",
+      "ok": false,
+      "error": "HTTP 401: {\"error\":{\"message\":\"Authentication Error, No api key passed in.\",\"type\":\"auth_error\",\"param\":\"None\",\"code\":\"401\"}}"
+    }
+  ],
+  "interpretation": "失败或缺少认证无法证明平台不支持该能力；当前账户能力需有效密钥分别确认。"
+}

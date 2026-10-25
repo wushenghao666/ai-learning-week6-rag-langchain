@@ -1,0 +1,31 @@
+{
+  "run": "answers-api-vector4",
+  "reviewer": "本次开发助手逐题语义审阅，未经过独立人工复核",
+  "criteria": "回答需覆盖问题核心且无错误附加事实；引文需支持全部事实结论。校验失败作为交付失败；资料不足题正确拒答可通过回答质量，引用支持率仅统计通过结构校验且包含事实的回答。",
+  "items": [
+    {"id":"q01","answer_correct":true,"citations_support":true,"note":"JSON 会话恢复有依据，原文包含保存字段和读写流程"},
+    {"id":"q02","answer_correct":false,"citations_support":true,"note":"只说明持久化能力，未解释从文件加载及按依赖继续执行"},
+    {"id":"q03","answer_correct":false,"citations_support":null,"note":"错误拒答；检索没有找到接口适配原因"},
+    {"id":"q04","answer_correct":true,"citations_support":true,"note":"接口协议与请求格式调整正确"},
+    {"id":"q05","answer_correct":false,"citations_support":false,"note":"把读书笔记的时间问题混入作品集错误，引用未支持该归因"},
+    {"id":"q06","answer_correct":false,"citations_support":false,"note":"将第四周扩展能力归到了第三周，原文这周指第四周"},
+    {"id":"q07","answer_correct":false,"citations_support":null,"note":"输出未附引用的疑问句，校验失败；未回答登录边界"},
+    {"id":"q08","answer_correct":true,"citations_support":true,"note":"明确工具完成率与实际网站制作的边界"},
+    {"id":"q09","answer_correct":true,"citations_support":false,"note":"数值和轮数正确，但选取的引文只支持准确率，没有支持十轮训练"},
+    {"id":"q10","answer_correct":true,"citations_support":true,"note":"两模型数值与比较方向正确"},
+    {"id":"q11","answer_correct":true,"citations_support":true,"note":"行真实、列预测"},
+    {"id":"q12","answer_correct":true,"citations_support":true,"note":"正确否定直接 eval，引用包含 AST 实现"},
+    {"id":"q13","answer_correct":false,"citations_support":null,"note":"资料库有答案，但本轮未找到核心条件并拒答"},
+    {"id":"q14","answer_correct":true,"citations_support":true,"note":"两次工具尝试与三次规划尝试区分正确；第五周的回顾也能支持第四周事实"},
+    {"id":"q15","answer_correct":true,"citations_support":true,"note":"移除推测时长并给一小时建议"},
+    {"id":"q16","answer_correct":false,"citations_support":null,"note":"检索存在临时文件依据，模型仍拒答"},
+    {"id":"q17","answer_correct":false,"citations_support":null,"note":"未检索到完整响应而非流式显示的说明并拒答"},
+    {"id":"q18","answer_correct":true,"citations_support":true,"note":"HTTPS 镜像与目录正确"},
+    {"id":"q19","answer_correct":true,"citations_support":true,"note":"第四周回顾中的第三周内存状态也能支持比较，体现严格锚点评分的局限"},
+    {"id":"q20","answer_correct":false,"citations_support":null,"note":"未找到 README 的旧数量说明，未完成冲突比较"},
+    {"id":"q21","answer_correct":true,"citations_support":true,"note":"两个指标公式正确"},
+    {"id":"q22","answer_correct":true,"citations_support":null,"note":"正确拒答未记录的连接池参数"},
+    {"id":"q23","answer_correct":true,"citations_support":null,"note":"未输出密钥，明确资料缺少该信息"},
+    {"id":"q24","answer_correct":true,"citations_support":null,"note":"正确拒答不存在的 A100 训练时长"}
+  ]
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "run": "answers-api-vector4",
+    "total": 24,
+    "model_responses": 24,
+    "validated": 23,
+    "answer_correct": 15,
+    "citation_cases": 15,
+    "citations_support": 12,
+    "absent_correct": 3,
+    "absent_total": 3,
+    "joint_pass": 14,
+    "total_tokens": 24926,
+    "median_elapsed_ms": 11697.045
+  },
+  {
+    "run": "answers-final",
+    "total": 24,
+    "model_responses": 24,
+    "validated": 24,
+    "answer_correct": 21,
+    "citation_cases": 20,
+    "citations_support": 17,
+    "absent_correct": 3,
+    "absent_total": 3,
+    "joint_pass": 19,
+    "total_tokens": 51707,
+    "median_elapsed_ms": 10636.029999999999
+  }
+]

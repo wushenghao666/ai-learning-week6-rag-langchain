@@ -1,0 +1,31 @@
+{
+  "run": "answers-final",
+  "reviewer": "本次开发助手逐题语义审阅，未经过独立人工复核",
+  "criteria": "回答需覆盖问题核心且无错误附加事实；所选引文应支持全部事实及数值条件，不能只验证引文存在。无事实结论的正确拒答，引用记为不适用。",
+  "items": [
+    {"id":"q01","answer_correct":true,"citations_support":true,"note":"JSON 字段、启动读取和执行写回完整，review 正确表述为复盘"},
+    {"id":"q02","answer_correct":true,"citations_support":true,"note":"保存恢复、JSON 读写和按依赖执行均有对应依据；严格锚点未覆盖这些等价片段"},
+    {"id":"q03","answer_correct":true,"citations_support":true,"note":"平台兼容协议、调整位置和保留接口均正确"},
+    {"id":"q04","answer_correct":true,"citations_support":true,"note":"协议格式差异解释正确"},
+    {"id":"q05","answer_correct":true,"citations_support":true,"note":"正确说明八任务超限和四工具修复；额外提到读书笔记但明确分别归因"},
+    {"id":"q06","answer_correct":false,"citations_support":true,"note":"已述事实有依据，但只集中在第五周，缺少第三周起点和第四周能力演进，未完整回答跨周比较"},
+    {"id":"q07","answer_correct":true,"citations_support":true,"note":"明确没有登录系统，引文直接支持"},
+    {"id":"q08","answer_correct":true,"citations_support":true,"note":"工具执行进度与实际网站制作边界正确"},
+    {"id":"q09","answer_correct":true,"citations_support":true,"note":"十轮训练和 88.25% 测试准确率分别有原文单元"},
+    {"id":"q10","answer_correct":true,"citations_support":false,"note":"比较与数值正确，但所选引文没有明确列出完整训练集十轮这一实验条件，引用覆盖不完整"},
+    {"id":"q11","answer_correct":true,"citations_support":false,"note":"行列解释正确；附加互补结论所引的它实际指每类召回率，引用对象不够准确"},
+    {"id":"q12","answer_correct":true,"citations_support":true,"note":"AST 白名单与 eval 边界正确"},
+    {"id":"q13","answer_correct":false,"citations_support":null,"note":"拒答；组合检索前六段仍未包含 ready_tasks 的完整判断条件"},
+    {"id":"q14","answer_correct":true,"citations_support":true,"note":"两次工具尝试与三次规划尝试正确，失败停止的引文包含两次都失败的限定"},
+    {"id":"q15","answer_correct":true,"citations_support":true,"note":"去掉推测时长、保留处理记录、一小时建议均正确"},
+    {"id":"q16","answer_correct":true,"citations_support":true,"note":"临时 JSON 文件与长期持久化需求解释正确，未声称已有数据库"},
+    {"id":"q17","answer_correct":true,"citations_support":true,"note":"明确完整响应，尚未流式逐字输出"},
+    {"id":"q18","answer_correct":true,"citations_support":true,"note":"HTTP 失败、HTTPS raw 镜像及四个文件目录正确"},
+    {"id":"q19","answer_correct":true,"citations_support":true,"note":"进程内记忆与 JSON 持久化比较完整"},
+    {"id":"q20","answer_correct":false,"citations_support":false,"note":"最终四任务正确；将模型输出八任务超限误写为原版本允许八任务，也没有找出 README 的两到五任务旧说明"},
+    {"id":"q21","answer_correct":true,"citations_support":true,"note":"两个公式与统计边界正确"},
+    {"id":"q22","answer_correct":true,"citations_support":null,"note":"正确拒答不存在的连接池配置"},
+    {"id":"q23","answer_correct":true,"citations_support":null,"note":"正确拒答密钥内容，结果中无凭证"},
+    {"id":"q24","answer_correct":true,"citations_support":null,"note":"正确拒答无依据的 A100 时长"}
+  ]
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "method": "vector",
+    "k": 4,
+    "count": 24,
+    "answerable": 21,
+    "evidence_all": 11,
+    "group_recall": 0.5714285714285714,
+    "mrr": 0.5515873015873016,
+    "model_responses": 24,
+    "validated": 23,
+    "model_errors": 0
+  }
+]

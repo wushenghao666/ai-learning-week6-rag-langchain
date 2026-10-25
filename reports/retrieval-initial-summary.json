@@ -1,0 +1,74 @@
+[
+  {
+    "method": "keyword",
+    "k": 2,
+    "count": 24,
+    "answerable": 21,
+    "evidence_all": 13,
+    "group_recall": 0.6666666666666666,
+    "mrr": 0.7142857142857143,
+    "model_responses": null,
+    "validated": null,
+    "model_errors": 0
+  },
+  {
+    "method": "keyword",
+    "k": 4,
+    "count": 24,
+    "answerable": 21,
+    "evidence_all": 16,
+    "group_recall": 0.7857142857142857,
+    "mrr": 0.7420634920634921,
+    "model_responses": null,
+    "validated": null,
+    "model_errors": 0
+  },
+  {
+    "method": "keyword",
+    "k": 6,
+    "count": 24,
+    "answerable": 21,
+    "evidence_all": 16,
+    "group_recall": 0.7857142857142857,
+    "mrr": 0.7420634920634921,
+    "model_responses": null,
+    "validated": null,
+    "model_errors": 0
+  },
+  {
+    "method": "vector",
+    "k": 2,
+    "count": 24,
+    "answerable": 21,
+    "evidence_all": 9,
+    "group_recall": 0.47619047619047616,
+    "mrr": 0.5238095238095238,
+    "model_responses": null,
+    "validated": null,
+    "model_errors": 0
+  },
+  {
+    "method": "vector",
+    "k": 4,
+    "count": 24,
+    "answerable": 21,
+    "evidence_all": 11,
+    "group_recall": 0.5714285714285714,
+    "mrr": 0.5515873015873016,
+    "model_responses": null,
+    "validated": null,
+    "model_errors": 0
+  },
+  {
+    "method": "vector",
+    "k": 6,
+    "count": 24,
+    "answerable": 21,
+    "evidence_all": 13,
+    "group_recall": 0.6428571428571429,
+    "mrr": 0.5611111111111111,
+    "model_responses": null,
+    "validated": null,
+    "model_errors": 0
+  }
+]

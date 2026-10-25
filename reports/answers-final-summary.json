@@ -1,0 +1,14 @@
+[
+  {
+    "method": "hybrid",
+    "k": 6,
+    "count": 24,
+    "answerable": 21,
+    "evidence_all": 17,
+    "group_recall": 0.8333333333333334,
+    "mrr": 0.6222222222222222,
+    "model_responses": 24,
+    "validated": 24,
+    "model_errors": 0
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "size": 480,
+  "overlap": 80,
+  "corpus_hash": "d4438f0bd418f708ad2c716b5c7a155bc7904eaba39f2ccf47b1ce60d1e7b399",
+  "embedding": {
+    "model": "BAAI/bge-small-zh-v1.5",
+    "revision": "7999e1d3359715c523056ef9478215996d62a620",
+    "pooling": "CLS/L2",
+    "max_tokens": 512,
+    "files": {
+      "model.safetensors": "354763b9b1357bc9c44f62c6be2276321081ed2567773608c0d0785b61d5a026",
+      "config.json": "3853a7979202c348751b753e36f579c41d8da7d36af617d3d907e1fc9b441f2a",
+      "tokenizer.json": "48cea5d44424912a6fd1ea647bf4fe50b55ab8b1e5879c3275f80e339e8fae26"
+    }
+  },
+  "dimension": 512,
+  "chunk_count": 112
+}

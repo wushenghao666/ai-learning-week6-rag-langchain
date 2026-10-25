@@ -13,7 +13,8 @@ def main():
     report = {'time_utc': datetime.now(timezone.utc).isoformat(), 'base': config['base'],
               'key_configured': bool(config['key']), 'checks': []}
     for path, payload in [('/models', None), ('/chat/completions',
-        {'model': config['model'], 'messages': [{'role':'user', 'content':'只回复 好'}], 'max_tokens':8}),
+        {'model': config['model'], 'messages': [{'role':'user', 'content':'只回复 好'}], 'max_tokens':32,
+         **({'thinking': {'type': config['thinking']}} if config['thinking'] in {'enabled','disabled'} else {})}),
         ('/embeddings', {'model': 'BAAI/bge-small-zh-v1.5', 'input':['测试文本']}),
         ('/embeddings', {'model': 'GLM-Embedding-3', 'input':['测试文本']})]:
         entry = {'path': path, 'requested_model': payload.get('model') if payload else None}

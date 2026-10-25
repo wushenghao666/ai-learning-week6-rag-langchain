@@ -40,7 +40,7 @@ python -m pip --python .\.venv\Scripts\python.exe install torch==2.9.0 --index-u
 
 复制 `.env.example` 到 `.env`，填写生成模型地址、名称和密钥。也可设置同名后端环境变量，环境变量优先，修改后重启服务。前端不接触密钥，健康接口只返回是否配置。
 
-本次分别实测了 `/models`、`/chat/completions`、`/embeddings`，记录在 [platform-probe.json](reports/platform-probe.json)。生成使用并行科技 `GLM-4-Flash`；向量使用本地 `BAAI/bge-small-zh-v1.5`，便于无密钥重建与检索。平台可用的生成能力和向量能力分别确认，不能从支持 Chat Completions 推断支持某个向量模型。
+本次分别实测了 `/models`、`/chat/completions`、`/embeddings`，记录在 [platform-probe.json](reports/platform-probe.json)。GLM-4-Flash 生成成功，平台 GLM-Embedding-3 返回 2048 维向量；平台不提供所试的 BGE 模型。最终生成选用真实测试过的并行科技 `GLM-4.5-Flash`，原模型与候选试验均保留。向量使用本地 `BAAI/bge-small-zh-v1.5`，便于无密钥重建与检索。平台模型标识由供应商提供，本项目没有验证底层权重。
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\probe_platform.py
@@ -71,14 +71,15 @@ python -m pip --python .\.venv\Scripts\python.exe install torch==2.9.0 --index-u
 | 编码 | 标题、周次、章节和原文一同编码，最长 512 token，CPU、批次 16、4 线程；问题加模型推荐的中文检索指令 |
 | 索引 | NumPy 矩阵精确余弦检索，无独立向量数据库 |
 | 关键词 | 中文连续双字词及英文/数字词，BM25 k1=1.5、b=0.75 |
-| 检索 | 可选 k=2/4/6，后端允许 1–12，不设未经校准的语义分数拒答阈值 |
-| 生成 | GLM-4-Flash，temperature=0，max_tokens=1400，超时 60 秒，无隐藏重试 |
+| 组合 | 两路各取前 12 名，RRF 常数 60；同一文件原文重叠超过短片段一半时去重 |
+| 检索 | 最终默认组合 k=6，可选 k=2/4/6，后端允许 1–12，不设未经校准的语义分数拒答阈值 |
+| 生成 | GLM-4.5-Flash，temperature=0，max_tokens=2400，thinking=disabled，超时 60 秒，无隐藏重试 |
 
 完整实验和质量边界见 [实际评估报告](reports/evaluation.md)。固定证据锚点评分衡量指定依据的位置，不能替代逐题语义检查。
 
 ## 引用、拒答和资料边界
 
-模型返回事实结论、引用编号、连续原文及独立建议。程序检查编号是否对应本次检索、引文是否逐字存在、事实是否带引用。失败保留原始输出并标记 `validation_error`，不会把它当作正常回答。
+程序先将每段检索内容划为最长 180 字符的连续原文单元，模型返回事实结论、source/span 编号及独立建议，程序按编号取回未经改写的原文。校验器也保留旧 quote 格式支持，便于检查历史实验。程序检查编号是否对应本次检索、引文是否逐字存在、事实是否带引用。失败保留原始输出并标记 `validation_error`，不会把它当作正常回答。原文单元解决模型删换行、删代码标记造成的抄写错误，结论的语义支持仍需另行评价。
 
 资料不足时使用 `insufficient`，页面明确显示不足。零检索片段时直接返回不足，不调用模型。向量相似度较高依然可能缺少答案，非空检索后的拒答依赖模型判断，固定无答案题用于检查这条边界。引文匹配仅证明来源存在，无法自动证明结论被支持，报告另行审阅。
 
@@ -89,7 +90,8 @@ python -m pip --python .\.venv\Scripts\python.exe install torch==2.9.0 --index-u
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 .\.venv\Scripts\python.exe scripts\evaluate.py --name my-retrieval
-.\.venv\Scripts\python.exe scripts\evaluate.py --answers --generator api --name my-answers
+.\.venv\Scripts\python.exe scripts\evaluate.py --include-hybrid --name my-retrieval-hybrid
+.\.venv\Scripts\python.exe scripts\evaluate.py --answers --generator api --method hybrid --k 6 --name my-answers
 ```
 
 真实回答评估调用外部接口，产生模型用量。每次使用新名称，已有结果拒绝覆盖。24 题位于 `evaluation/questions.json`，逐题含类别、预期证据和质量标准。3 道无答案题不计入检索依据命中率分母；回答质量另按 24 题评价。每题的实际片段、分数、输出、错误及耗时即时写入 JSONL，接口收到文本、结构引用校验和语义正确分别统计。
