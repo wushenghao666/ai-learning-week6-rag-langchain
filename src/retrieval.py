@@ -3,6 +3,7 @@ import collections
 import json
 import math
 import re
+import time
 from pathlib import Path
 import numpy as np
 from .config import ROOT
@@ -46,7 +47,7 @@ class Retriever:
         self.df = collections.Counter(t for bag in self.bags for t in bag)
         self.avgdl = sum(map(lambda b: sum(b.values()), self.bags)) / len(self.bags)
 
-    def search(self, question, method='vector', k=4):
+    def search(self, question, method='vector', k=4, on_event=None):
         if not isinstance(question, str) or not question.strip():
             raise ValueError('问题不能为空')
         if len(question) > 2000:
@@ -55,8 +56,8 @@ class Retriever:
             raise ValueError('method 为 keyword/vector/hybrid，k 为 1 到 12')
         if method == 'hybrid':
             # Reciprocal rank fusion uses ranks, never mixes incompatible score scales.
-            sparse = self.search(question, 'keyword', 12)
-            dense = self.search(question, 'vector', 12)
+            sparse = self.search(question, 'keyword', 12, on_event)
+            dense = self.search(question, 'vector', 12, on_event)
             fused = {}
             by_id = {}
             for group in [sparse, dense]:
@@ -65,21 +66,38 @@ class Retriever:
                     by_id[hit['id']] = hit
             candidates = sorted(fused, key=lambda x:(-fused[x], x))
             selected = []
+            removed = []
             for cid in candidates:
                 hit = by_id[cid]
                 # Overlapping windows should not consume multiple context slots.
                 if any(hit['doc_id']==old['doc_id'] and
                        max(0,min(hit['end'],old['end'])-max(hit['start'],old['start'])) /
                        min(hit['end']-hit['start'],old['end']-old['start']) > 0.5 for old in selected):
+                    removed.append(cid)
                     continue
                 selected.append(dict(hit, rank=len(selected)+1, score=round(fused[cid],6)))
                 if len(selected)==k:
                     break
+            if on_event:
+                on_event('fusion', '合并两路排名并去重', dict(rrf_constant=60,
+                    candidate_count=len(candidates), removed_overlaps=removed,
+                    ranking=[dict(id=cid, score=round(fused[cid],6),
+                        keyword_rank=next((h['rank'] for h in sparse if h['id']==cid),None),
+                        vector_rank=next((h['rank'] for h in dense if h['id']==cid),None)) for cid in candidates],
+                    selected=[h['id'] for h in selected]))
             return selected
         if method == 'vector':
             if self.embedder is None:
                 raise ValueError('向量模型尚未加载')
-            scores = self.vectors @ self.embedder.encode([question], query=True)[0]
+            begin = time.perf_counter()
+            if on_event:
+                on_event('embedding_started', '正在把问题编码为本地向量', {'model':'BAAI/bge-small-zh-v1.5'})
+            vector = self.embedder.encode([question], query=True)[0]
+            scores = self.vectors @ vector
+            if on_event:
+                on_event('embedding', '问题向量与余弦计算完成', dict(dimension=len(vector),
+                    norm=round(float(np.linalg.norm(vector)),6), compared_chunks=len(self.chunks),
+                    elapsed_ms=round((time.perf_counter()-begin)*1000,2)))
         else:
             scores = []
             for bag in self.bags:
@@ -90,5 +108,11 @@ class Retriever:
                     score += idf * freq * 2.5 / (freq + 1.5*(0.25+0.75*sum(bag.values())/self.avgdl))
                 scores.append(score)
         order = sorted(range(len(scores)), key=lambda i: (-float(scores[i]), self.chunks[i]['id']))
-        return [dict(self.chunks[i], rank=n+1, score=round(float(scores[i]), 6))
+        hits = [dict(self.chunks[i], rank=n+1, score=round(float(scores[i]), 6))
                 for n, i in enumerate(order[:k]) if float(scores[i]) > 0]
+        if on_event:
+            on_event('ranking', '关键词排名完成' if method=='keyword' else '向量排名完成',
+                dict(method=method, query_terms=sorted(set(tokens(question))) if method=='keyword' else None,
+                     score_meaning='BM25 相关分数' if method=='keyword' else '余弦相似度；不代表答案正确概率',
+                     ranking=[{key:h[key] for key in ['id','rank','score','title','section']} for h in hits]))
+        return hits

@@ -1,0 +1,50 @@
+test_example_and_static_assets (test_rag.HTTPTests.test_example_and_static_assets) ... 127.0.0.1 - - [25/Oct/2026 12:55:06] "GET /examples.json HTTP/1.1" 200 -
+127.0.0.1 - - [25/Oct/2026 12:55:06] "GET /app.js HTTP/1.1" 200 -
+127.0.0.1 - - [25/Oct/2026 12:55:06] "GET /styles.css HTTP/1.1" 200 -
+ok
+test_health_no_credentials (test_rag.HTTPTests.test_health_no_credentials) ... 127.0.0.1 - - [25/Oct/2026 12:55:06] "GET /api/health HTTP/1.1" 200 -
+ok
+test_http_cross_origin_rejected (test_rag.HTTPTests.test_http_cross_origin_rejected) ... 127.0.0.1 - - [25/Oct/2026 12:55:06] "POST /api/ask HTTP/1.1" 403 -
+ok
+test_http_empty_question (test_rag.HTTPTests.test_http_empty_question) ... 127.0.0.1 - - [25/Oct/2026 12:55:06] "POST /api/ask HTTP/1.1" 400 -
+ok
+test_http_path_traversal (test_rag.HTTPTests.test_http_path_traversal) ... 127.0.0.1 - - [25/Oct/2026 12:55:06] "GET /../.env HTTP/1.1" 404 -
+ok
+test_http_retrieval (test_rag.HTTPTests.test_http_retrieval) ... 127.0.0.1 - - [25/Oct/2026 12:55:06] "POST /api/ask HTTP/1.1" 200 -
+ok
+test_stream_events_and_final_result (test_rag.HTTPTests.test_stream_events_and_final_result) ... 127.0.0.1 - - [25/Oct/2026 12:55:06] "POST /api/ask/stream HTTP/1.1" 200 -
+ok
+test_stream_invalid_input_is_visible (test_rag.HTTPTests.test_stream_invalid_input_is_visible) ... 127.0.0.1 - - [25/Oct/2026 12:55:06] "POST /api/ask/stream HTTP/1.1" 200 -
+ok
+test_stream_model_failure_keeps_trace (test_rag.HTTPTests.test_stream_model_failure_keeps_trace) ... 127.0.0.1 - - [25/Oct/2026 12:55:06] "POST /api/ask/stream HTTP/1.1" 200 -
+ok
+test_api_trace_omits_credentials_and_reasoning (test_rag.RagTests.test_api_trace_omits_credentials_and_reasoning) ... ok
+test_chunk_offsets_and_bounds (test_rag.RagTests.test_chunk_offsets_and_bounds) ... ok
+test_empty_and_bad_parameters (test_rag.RagTests.test_empty_and_bad_parameters) ... ok
+test_evidence_instruction_stays_user_data (test_rag.RagTests.test_evidence_instruction_stays_user_data) ... ok
+test_exact_citation_mapping (test_rag.RagTests.test_exact_citation_mapping) ... ok
+test_fabricated_quote_or_number_rejected (test_rag.RagTests.test_fabricated_quote_or_number_rejected) ... ok
+test_heading_in_code_is_not_section (test_rag.RagTests.test_heading_in_code_is_not_section) ... ok
+test_http_failure_redacts_key (test_rag.RagTests.test_http_failure_redacts_key) ... ok
+test_hybrid_fuses_ranks_and_removes_overlapping_windows (test_rag.RagTests.test_hybrid_fuses_ranks_and_removes_overlapping_windows) ... ok
+test_index_rejects_changed_corpus (test_rag.RagTests.test_index_rejects_changed_corpus) ... ok
+test_index_rejects_changed_model (test_rag.RagTests.test_index_rejects_changed_model) ... ok
+test_insufficient_allowed (test_rag.RagTests.test_insufficient_allowed) ... ok
+test_invalid_json_preserves_raw (test_rag.RagTests.test_invalid_json_preserves_raw) ... ok
+test_invalid_span_rejected (test_rag.RagTests.test_invalid_span_rejected) ... ok
+test_missing_key_has_no_fake_answer (test_rag.RagTests.test_missing_key_has_no_fake_answer) ... ok
+test_model_failure_is_visible (test_rag.RagTests.test_model_failure_is_visible) ... ok
+test_network_timeout_is_specific (test_rag.RagTests.test_network_timeout_is_specific) ... ok
+test_no_evidence_skips_model (test_rag.RagTests.test_no_evidence_skips_model) ... ok
+test_no_lexical_match (test_rag.RagTests.test_no_lexical_match) ... ok
+test_retrieve_only_never_calls_generator (test_rag.RagTests.test_retrieve_only_never_calls_generator) ... ok
+test_source_scope (test_rag.RagTests.test_source_scope) ... ok
+test_span_reference_resolves_exact_original (test_rag.RagTests.test_span_reference_resolves_exact_original) ... ok
+test_split_invalid (test_rag.RagTests.test_split_invalid) ... ok
+test_trace_retrieve_only_and_order (test_rag.RagTests.test_trace_retrieve_only_and_order) ... ok
+test_uncited_claim_rejected (test_rag.RagTests.test_uncited_claim_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 34 tests in 0.765s
+
+OK

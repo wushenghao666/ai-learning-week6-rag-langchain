@@ -1,16 +1,22 @@
 <!doctype html>
-<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="zh-CN">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>学习资料问答 · Week 6</title>
-<style>
-:root{font-family:system-ui,sans-serif;color:#213b39;background:#f3f5ee}body{max-width:1080px;margin:48px auto;padding:0 24px}h1{font-size:36px;letter-spacing:-1px}header small{letter-spacing:3px;color:#617d73}p{line-height:1.7}.panel{background:#fff;border:1px solid #d6dfd4;border-radius:16px;padding:24px;margin:20px 0}textarea{box-sizing:border-box;width:100%;font:inherit;line-height:1.6;border:1px solid #b6c9c0;border-radius:8px;padding:12px}button,select,input{font:inherit;padding:8px}button{background:#225e50;color:white;border:0;border-radius:8px;cursor:pointer}button:disabled{opacity:.5}label{margin-right:18px}pre,blockquote{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7}blockquote{margin:12px 0;padding:12px;border-left:3px solid #b8c9a9;background:#f6f8f2}.meta{font-size:13px;color:#60746f}.error{color:#a33333}details{border-top:1px solid #dce5db;padding:12px 0}summary{cursor:pointer}.tag{font-size:12px;background:#e8f0df;padding:5px 10px;border-radius:20px}a{color:#225e50}
-</style>
-<header><small>PERSONAL LEARNING / WEEK 06</small><h1>把回答放回资料中检查</h1><p>检索前五周的博客与 README。查看回答依据、章节和实际送入模型的片段。</p><span class="tag" id="health">正在读取后端状态</span></header>
-<form class="panel" id="form"><label for="question">你的问题</label><textarea id="question" rows="3" maxlength="2000" required>第四周怎样实现会话恢复？</textarea><p><label>检索 <select id="method"><option value="hybrid">组合 · RRF</option><option value="keyword">关键词 · BM25</option><option value="vector">向量 · BGE</option></select></label><label>片段数 <select id="k"><option>2</option><option>4</option><option selected>6</option></select></label><label><input type="checkbox" id="only" checked>只检索</label><button id="submit">查资料</button></p><p class="meta">本地单次问答，不保存会话。取消只检索后调用后端配置的真实模型；失败会显示错误。</p></form>
+<link rel="stylesheet" href="/styles.css">
+<header><small>PERSONAL LEARNING / WEEK 06</small><h1>把回答放回资料中检查</h1>
+<p>查询前五周的博客与 README，沿着处理记录核对回答的依据。</p><span class="tag" id="health">正在读取后端状态</span></header>
+<section class="panel"><h2>从一个例子开始</h2><p class="meta">点击示例填入问题，预期结果用于核对；点击查询后才会实际运行，模型输出可能与预期不同。</p><div id="examples" class="examples"></div><div id="expected" class="expected" hidden></div></section>
+<form class="panel" id="form">
+<label for="question">你的问题</label><textarea id="question" rows="3" maxlength="2000" required>第四周怎样实现会话恢复？</textarea>
+<div class="controls"><label>检索方式 <select id="method" aria-describedby="method-help"><option value="hybrid">组合 · RRF</option><option value="keyword">关键词 · BM25</option><option value="vector">向量 · BGE</option></select></label>
+<label>片段数 <select id="k" aria-describedby="k-help"><option>2</option><option>4</option><option selected>6</option></select></label>
+<label><input type="checkbox" id="only" checked aria-describedby="only-help">只检索</label><button id="submit">查询资料</button></div>
+<div class="help-grid"><div><h3>检索方式是什么？</h3><p id="method-help">关键词按字词匹配，适合函数名与具体数字；向量按语义相近程度排序，适合不同表述；组合合并两路排名并去掉高度重叠片段。分数越高代表该方法下更相关，不能作为答案正确率，不同方法的分数不能直接比较。</p></div>
+<div><h3>片段数是什么？</h3><p id="k-help">片段是从原文切出的短文本，当前每段最多 480 字符。片段数控制最终取回多少段；生成时这些片段组成模型上下文。更多片段可能补足依据，也会增加无关内容、输入用量和等待时间；实际返回可能少于所选数量。</p></div>
+<div><h3>只检索是什么意思？</h3><p id="only-help">勾选后仅搜索本地资料，展示片段和排名，不请求生成模型 API，也不生成回答。取消勾选后，将问题与选中资料发送到后端配置的真实模型，可能产生模型用量；请求失败会显示具体错误。</p></div></div>
+<p class="meta">本地单次问答，不保存会话。处理记录实时更新；模型使用完整响应，不展示内部思维链或伪造逐 token 过程。</p>
+</form>
+<section class="panel" id="process-panel" hidden><h2>本次处理过程</h2><p id="progress" role="status" aria-live="polite"></p><p class="meta">下面是程序实际执行的步骤、公开请求内容和脱敏返回，不是模型内部思维链。展开卡片可检查细节。</p><div id="timeline"></div></section>
 <main id="result" aria-live="polite"></main>
-<script>
-const $=id=>document.getElementById(id);
-function element(tag,text,parent,cls){const el=document.createElement(tag);el.textContent=text;if(cls)el.className=cls;if(parent)parent.append(el);return el}
-fetch('/api/health').then(r=>r.json()).then(h=>{$('health').textContent=`${h.chunks} 个片段 · ${h.generator} / ${h.model} · 平台密钥${h.api_key_configured?'已配置':'未配置'}`}).catch(e=>{$('health').textContent=e.message});
-$('form').onsubmit=async e=>{e.preventDefault();$('submit').disabled=true;$('result').replaceChildren();element('p','正在检索和处理，请稍候…',$('result'));try{const response=await fetch('/api/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:$('question').value,method:$('method').value,k:Number($('k').value),retrieve_only:$('only').checked})});const d=await response.json();$('result').replaceChildren();const box=element('section','',$('result'),'panel');element('h2',d.status==='retrieval_only'?'只检索结果':'回答与依据',box);element('p',`${d.status||'请求错误'} · ${d.elapsed_ms||0} ms`,box,'meta');if(d.error)element('p',d.error,box,'error');if(d.notice)element('p',d.notice,box);for(const c of d.claims||[])element('p',c.text+' '+c.evidence.map(x=>'['+x.source+']').join(' '),box);if(d.status==='insufficient')element('p','资料不足，当前资料无法完整回答。',box);for(const s of d.suggestions||[])element('p','模型建议：'+s,box);for(const c of d.citations||[]){element('p',`[${c.number}] ${c.source} · ${c.section}`,box,'meta');element('blockquote',c.quote,box)}if(d.status==='validation_error'&&d.raw){let details=element('details','',box);element('summary','未通过引用校验的模型原文',details);element('pre',d.raw,details)}const list=element('section','',$('result'),'panel');element('h2','实际检索片段',list);for(const h of d.hits||[]){const detail=element('details','',list);element('summary',`[${h.rank}] ${h.title} · ${h.score}`,detail);element('p',h.source+' / '+h.section,detail,'meta');element('p',`片段 ${h.id} · 字符 ${h.start}–${h.end}`,detail,'meta');element('blockquote',h.text,detail)}if(!(d.hits||[]).length)element('p','没有匹配片段。',list)}catch(err){$('result').replaceChildren();element('p',err.message,$('result'),'error')}finally{$('submit').disabled=false}};
-</script></html>
-
+<script src="/app.js"></script>
+</html>

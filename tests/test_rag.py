@@ -20,7 +20,7 @@ HIT = dict(id='w4-blog:0:10', text='会话保存在 JSON 文件。', source='wee
 
 class FakeRetriever:
     chunks = [HIT]
-    def search(self, question, method='vector', k=4):
+    def search(self, question, method='vector', k=4, on_event=None):
         if not isinstance(question,str) or not question.strip():
             raise ValueError('问题不能为空')
         return [dict(HIT, rank=1, score=1)]
@@ -154,14 +154,52 @@ class RagTests(unittest.TestCase):
         with patch.object(gen,'answer',side_effect=AssertionError('must not call')):
             self.assertEqual(RAGService(FakeRetriever(),gen).ask('q',retrieve_only=True)['status'],'retrieval_only')
 
+    def test_trace_retrieve_only_and_order(self):
+        events=[]
+        result=RAGService(FakeRetriever()).ask('q',retrieve_only=True,on_event=events.append)
+        self.assertEqual(result['trace'],events)
+        self.assertEqual([e['stage'] for e in events],['retrieval_started','retrieval_complete','context','generation_skipped','complete'])
+        self.assertFalse(next(e for e in events if e['stage']=='context')['data']['generation_requested'])
+        self.assertNotIn('api_request',[e['stage'] for e in events])
+
+    def test_api_trace_omits_credentials_and_reasoning(self):
+        import io
+        cfg=dict(key='unit-trace-secret',generator='api',model='model',base='https://example.test',timeout=1,max_tokens=100,thinking='default')
+        raw=json.dumps({'status':'answered','claims':[{'text':'会话保存到 JSON',
+            'evidence':[{'source':1,'span':1}]}]})
+        body=dict(id='response-test',model='model',choices=[dict(index=0,finish_reason='stop',
+            message=dict(role='assistant',content=raw,reasoning_content='hidden-private-reasoning'))],usage={'total_tokens':20})
+        response=io.BytesIO(json.dumps(body).encode())
+        response.status=200
+        events=[]
+        def respond(*args,**kwargs):
+            self.assertIn('api_request',[e['stage'] for e in events])
+            return response
+        with patch('src.service.settings',return_value=cfg),patch('src.generation.settings',return_value=cfg),patch('urllib.request.urlopen',side_effect=respond):
+            result=RAGService(FakeRetriever()).ask('q',on_event=events.append)
+        serialized=json.dumps(result)
+        self.assertNotIn('unit-trace-secret',serialized)
+        self.assertNotIn('hidden-private-reasoning',serialized)
+        self.assertEqual(result['status'],'answered')
+        stages=[e['stage'] for e in events]
+        self.assertLess(stages.index('api_request'),stages.index('api_response'))
+        self.assertLess(stages.index('api_response'),stages.index('validation'))
+        api=next(e for e in events if e['stage']=='api_response')
+        self.assertEqual(api['data']['http_status'],200)
+        self.assertEqual(api['data']['response']['usage']['total_tokens'],20)
+
     def test_http_failure_redacts_key(self):
         import io
         cfg={'key':'unit-test-secret','base':'https://example.test/v1','timeout':1}
         error=urllib.error.HTTPError('url',401,'bad',{},io.BytesIO(b'unit-test-secret rejected'))
+        events=[]
         with patch('urllib.request.urlopen',side_effect=error):
             with self.assertRaises(ModelError) as caught:
-                request_json('/chat/completions',{},cfg)
+                request_json('/chat/completions',{},cfg,on_event=lambda *event:events.append(event))
         self.assertNotIn(cfg['key'],str(caught.exception))
+        self.assertEqual(events[-1][0],'api_error')
+        self.assertEqual(events[-1][2]['http_status'],401)
+        self.assertNotIn(cfg['key'],json.dumps(events))
 
     def test_missing_key_has_no_fake_answer(self):
         with patch('src.generation.settings',return_value={'generator':'api','key':''}):
@@ -185,6 +223,10 @@ class RagTests(unittest.TestCase):
             self.assertEqual(len(hits),6)
             self.assertEqual([h['rank'] for h in hits],list(range(1,7)))
             self.assertEqual(len({h['id'] for h in hits}),6)
+            events=[]
+            traced=retriever.search('会话恢复','hybrid',6,on_event=lambda *event:events.append(event))
+            self.assertEqual(traced,hits)
+            self.assertEqual([e[0] for e in events],['ranking','embedding_started','embedding','ranking','fusion'])
 
 class HTTPTests(unittest.TestCase):
     @classmethod
@@ -216,6 +258,41 @@ class HTTPTests(unittest.TestCase):
         req=urllib.request.Request(self.base+'/api/ask',data=b'{"question":"test","retrieve_only":true}')
         with urllib.request.urlopen(req) as r:
             self.assertEqual(json.load(r)['status'],'retrieval_only')
+
+    def test_stream_events_and_final_result(self):
+        req=urllib.request.Request(self.base+'/api/ask/stream',data=b'{"question":"test","retrieve_only":true}')
+        with urllib.request.urlopen(req) as response:
+            self.assertIn('application/x-ndjson',response.headers['Content-Type'])
+            items=[json.loads(line) for line in response if line.strip()]
+        self.assertEqual(items[0]['event']['stage'],'queued')
+        self.assertEqual(items[-1]['type'],'result')
+        self.assertEqual(items[-1]['result']['status'],'retrieval_only')
+        self.assertIn('generation_skipped',[i['event']['stage'] for i in items if i['type']=='event'])
+
+    def test_stream_model_failure_keeps_trace(self):
+        req=urllib.request.Request(self.base+'/api/ask/stream',data=b'{"question":"test","retrieve_only":false}')
+        with patch.object(Generator,'complete',side_effect=ModelError('HTTP 503: unavailable')):
+            with urllib.request.urlopen(req) as response:
+                items=[json.loads(line) for line in response if line.strip()]
+        self.assertEqual(items[-1]['result']['status'],'model_error')
+        self.assertIn('HTTP 503',items[-1]['result']['error'])
+        self.assertIn('model_error',[i['event']['stage'] for i in items if i['type']=='event'])
+
+    def test_stream_invalid_input_is_visible(self):
+        req=urllib.request.Request(self.base+'/api/ask/stream',data=b'{"question":"","retrieve_only":true}')
+        with urllib.request.urlopen(req) as response:
+            items=[json.loads(line) for line in response if line.strip()]
+        self.assertEqual(items[-1]['type'],'error')
+        self.assertIn('不能为空',items[-1]['error'])
+
+    def test_example_and_static_assets(self):
+        with urllib.request.urlopen(self.base+'/examples.json') as response:
+            examples=json.load(response)
+        self.assertEqual(len(examples),6)
+        self.assertTrue(all(e['expected'] and e['basis'] for e in examples))
+        for name in ['app.js','styles.css']:
+            with urllib.request.urlopen(self.base+'/'+name) as response:
+                self.assertEqual(response.status,200)
 
     def test_http_cross_origin_rejected(self):
         req=urllib.request.Request(self.base+'/api/ask',data=b'{}',headers={'Origin':'https://other.test'})

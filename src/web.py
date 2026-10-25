@@ -26,25 +26,32 @@ def handler_for(service):
                 self.send_json(200, dict(ok=True, generator=config['generator'],
                     model=config['model'] if config['generator']=='api' else 'Qwen2.5-0.5B-Instruct',
                     api_key_configured=bool(config['key']), chunks=len(service.retriever.chunks)))
-            elif self.path == '/':
-                body = (ROOT / 'web/index.html').read_bytes()
+            elif self.path in {'/','/app.js','/styles.css','/examples.json'}:
+                name = {'/':'index.html'}.get(self.path,self.path[1:])
+                body = (ROOT / 'web' / name).read_bytes()
                 self.send_response(200)
-                self.send_header('Content-Type', 'text/html; charset=utf-8')
+                mime={'index.html':'text/html','app.js':'text/javascript','styles.css':'text/css','examples.json':'application/json'}[name]
+                self.send_header('Content-Type', mime+'; charset=utf-8')
                 self.send_header('Content-Length', str(len(body)))
                 self.send_header('X-Content-Type-Options', 'nosniff')
+                self.send_header('Cache-Control','no-store')
                 self.end_headers()
                 self.wfile.write(body)
             else:
                 self.send_json(404, {'error': '路径不存在'})
 
         def do_POST(self):
-            if self.path != '/api/ask':
+            if self.path not in {'/api/ask','/api/ask/stream'}:
                 self.send_json(404, {'error': '路径不存在'})
                 return
             origin = self.headers.get('Origin')
             if origin and origin != f'http://{self.headers.get("Host")}':
                 self.send_json(403, {'error': '仅接受同源请求'})
                 return
+            streaming = False
+            def send_event(payload):
+                self.wfile.write((json.dumps(payload,ensure_ascii=False)+'\n').encode('utf-8'))
+                self.wfile.flush()
             try:
                 length = int(self.headers.get('Content-Length', '0'))
                 if not 0 < length <= 16000:
@@ -55,14 +62,35 @@ def handler_for(service):
                 retrieve_only = payload.get('retrieve_only', True)
                 if type(retrieve_only) is not bool:
                     raise ValueError('retrieve_only 必须为布尔值')
+                if self.path.endswith('/stream'):
+                    self.send_response(200)
+                    self.send_header('Content-Type','application/x-ndjson; charset=utf-8')
+                    self.send_header('Cache-Control','no-store')
+                    self.send_header('Connection','close')
+                    self.end_headers()
+                    self.close_connection = True
+                    streaming = True
+                    send_event({'type':'event','event':dict(stage='queued',title='等待后端处理',elapsed_ms=0,data={})})
                 with lock:
                     result = service.ask(payload.get('question'), payload.get('method', 'hybrid'),
-                                         payload.get('k', 6), retrieve_only)
-                self.send_json(502 if result['status'] in {'model_error','validation_error'} else 200, result)
+                                         payload.get('k', 6), retrieve_only,
+                                         on_event=(lambda event:send_event({'type':'event','event':event})) if streaming else None)
+                if streaming:
+                    send_event({'type':'result','result':result})
+                else:
+                    self.send_json(502 if result['status'] in {'model_error','validation_error'} else 200, result)
+            except (BrokenPipeError,ConnectionResetError):
+                return
             except (ValueError, TypeError) as exc:
-                self.send_json(400, {'error': str(exc)})
+                if streaming:
+                    send_event({'type':'error','error':str(exc)})
+                else:
+                    self.send_json(400, {'error': str(exc)})
             except Exception as exc:
-                self.send_json(500, {'error': f'内部错误：{type(exc).__name__}'})
+                if streaming:
+                    send_event({'type':'error','error':f'内部错误：{type(exc).__name__}'})
+                else:
+                    self.send_json(500, {'error': f'内部错误：{type(exc).__name__}'})
     return Handler
 
 def main():

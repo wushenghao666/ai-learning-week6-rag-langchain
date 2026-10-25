@@ -1,0 +1,51 @@
+[
+  {
+    "case": {
+      "question": "第五周为什么适配 Chat Completions？",
+      "method": "keyword",
+      "k": 4,
+      "retrieve_only": true
+    },
+    "status": "retrieval_only",
+    "stages": [
+      "queued",
+      "retrieval_started",
+      "ranking",
+      "retrieval_complete",
+      "context",
+      "generation_skipped",
+      "complete"
+    ],
+    "first_event_ms": 70.96,
+    "final_result_ms": 80.04,
+    "answer_generated": false,
+    "error": null
+  },
+  {
+    "case": {
+      "question": "现有第五周项目是否已经实现用户登录？",
+      "method": "hybrid",
+      "k": 6,
+      "retrieve_only": false
+    },
+    "status": "model_error",
+    "stages": [
+      "queued",
+      "retrieval_started",
+      "ranking",
+      "embedding_started",
+      "embedding",
+      "ranking",
+      "fusion",
+      "retrieval_complete",
+      "context",
+      "api_request",
+      "model_error",
+      "complete"
+    ],
+    "first_event_ms": 21.4,
+    "final_result_ms": 1111.14,
+    "answer_generated": false,
+    "error": "HTTP 429: {\"error\":{\"message\":\"RateLimitError: OpenAIException - 您的账户已达到速率限制，请您控制请求频率 Error happened to model=GLM-4.5-Flash. Received Model Group=GLM-4.5-Flash\\nAvailable Model Group Fallbacks=None\\nError doing the fallback: RateLimitError: OpenAIException - 您的账户已达到速率限制，请您控制请求频率 Error happened to model=GLM-4.5-Flash\",\"type\":\"throttling_error\",\"param\":null,\"code\":\"429\"}}"
+  }
+]
