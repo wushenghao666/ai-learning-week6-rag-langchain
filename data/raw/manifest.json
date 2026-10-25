@@ -1,0 +1,92 @@
+[
+  {
+    "id": "w1-blog",
+    "week": 1,
+    "kind": "blog",
+    "source": "AI-learning/posts/2026-09-20-fashion-mnist.md",
+    "snapshot": "week1-blog.md",
+    "title": "第一周：用 PyTorch 完成 Fashion-MNIST 图像分类",
+    "sha256": "648180cdf6125e5826042b5cf87a300db03479384c12dbc1eca353d9aaefd619"
+  },
+  {
+    "id": "w1-readme",
+    "week": 1,
+    "kind": "readme",
+    "source": "week 1/ai-learning-week1-fashion-mnist/README.md",
+    "snapshot": "week1-readme.md",
+    "title": "第 1 周：Fashion-MNIST 图像分类",
+    "sha256": "56a2228334d70ebd5e2d662dd50acf32141e3e69c8c56b08fd747e65b462787c"
+  },
+  {
+    "id": "w2-blog",
+    "week": 2,
+    "kind": "blog",
+    "source": "AI-learning/posts/2026-09-27-cnn-augmentation.md",
+    "snapshot": "week2-blog.md",
+    "title": "第二周：用 CNN、数据增强和混淆矩阵改进图像分类",
+    "sha256": "ed546cc1f81d69ddb1c0ba799b86f6de20d22d64654a1fe2bd3a565f37367633"
+  },
+  {
+    "id": "w2-readme",
+    "week": 2,
+    "kind": "readme",
+    "source": "week 2/ai-learning-week2-cnn-augmentation/README.md",
+    "snapshot": "week2-readme.md",
+    "title": "第二周：CNN、数据增强与实验对比",
+    "sha256": "dd4031436241291c4c523506c5416bfc1ba610473d1538180daa42b4eb686937"
+  },
+  {
+    "id": "w3-blog",
+    "week": 3,
+    "kind": "blog",
+    "source": "AI-learning/posts/2026-10-03-study-agent.md",
+    "snapshot": "week3-blog.md",
+    "title": "第三周：从概念到代码，做一个可追踪的学习 Agent",
+    "sha256": "a62f720be86d6adfdba5152741bd20264809e2b3d2eb7a341ef038ca3df1810d"
+  },
+  {
+    "id": "w3-readme",
+    "week": 3,
+    "kind": "readme",
+    "source": "week 3/ai-learning-week3-study-agent/README.md",
+    "snapshot": "week3-readme.md",
+    "title": "第三周：一个可追踪的学习计划 Agent",
+    "sha256": "b08f176bb2f6ba1e90b9ccb2141554eafc2b01dfe88b5f1baf69136bfba72a01"
+  },
+  {
+    "id": "w4-blog",
+    "week": 4,
+    "kind": "blog",
+    "source": "AI-learning/posts/2026-10-11-agent-session.md",
+    "snapshot": "week4-blog.md",
+    "title": "第四周：让学习 Agent 记住进度并继续执行",
+    "sha256": "78ed1717b73d18a4369a01afa32936b9c850a5da109d065601d7ecb9db9d4116"
+  },
+  {
+    "id": "w4-readme",
+    "week": 4,
+    "kind": "readme",
+    "source": "week 4/ai-learning-week4-agent-session/README.md",
+    "snapshot": "week4-readme.md",
+    "title": "第四周：可持续运行的学习计划 Agent",
+    "sha256": "a439a6bfbd80779b167a31eacc4b0071343ce97e3bcd8659f5b5d48f2c23a175"
+  },
+  {
+    "id": "w5-blog",
+    "week": 5,
+    "kind": "blog",
+    "source": "AI-learning/posts/2026-10-18-agent-dashboard.md",
+    "snapshot": "week5-blog.md",
+    "title": "第五周：把学习 Agent 做成可视化 Web 应用",
+    "sha256": "928cfae0667c21f21ec82a58a9d3bb61f695bf18d49dceddc154152be1747de6"
+  },
+  {
+    "id": "w5-readme",
+    "week": 5,
+    "kind": "readme",
+    "source": "week 5/ai-learning-week5-agent-dashboard/README.md",
+    "snapshot": "week5-readme.md",
+    "title": "第五周：Agent 可视化任务控制台",
+    "sha256": "955a463da0fae184ac2eadf591593faf04138a7eb00c62110d173a9f35202fdd"
+  }
+]
