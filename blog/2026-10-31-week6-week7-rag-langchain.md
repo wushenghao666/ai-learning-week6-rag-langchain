@@ -220,7 +220,7 @@ Set-Location 'C:\Users\wushe\Documents\ChatGPT\AI-learning'
 & 'C:\Users\wushe\Documents\ChatGPT\week 6\.venv\Scripts\python.exe' -m http.server 8007 --bind 127.0.0.1
 ```
 
-打开 http://127.0.0.1:8007/#post=2026-10-25-personal-rag 即可预览本篇。文章和配图都保存在本地；修改正文后刷新页面，修改标题或摘要后需要重新生成索引。
+打开 http://127.0.0.1:8007/#post=2026-10-31-week6-week7-rag-langchain 即可预览本篇。文章和配图都保存在本地；修改正文后刷新页面，修改标题或摘要后需要重新生成索引。
 
 模块分别负责资料、向量、检索、生成、应用入口和 HTTP 适配，命令行、页面与评估共用同一套问答服务。完整交互、会话管理和公网部署留给第七周。
 
