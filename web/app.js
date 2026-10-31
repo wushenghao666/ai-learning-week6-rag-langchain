@@ -16,5 +16,6 @@ async function ask() {
 }
 
 document.querySelector('#ask').addEventListener('click', ask);
-fetch('/examples.json').then(r => r.json()).then(items => { examples.innerHTML = items.map(item => `<button class="example">${item.question}</button><small>${item.expected}</small>`).join(''); document.querySelectorAll('.example').forEach((button, i) => button.addEventListener('click', () => { q.value = items[i].question; })); });
+fetch('./examples.json').then(r => r.json()).then(items => { examples.innerHTML = items.map(item => `<button class="example">${item.question}</button><small>${item.expected}</small>`).join(''); document.querySelectorAll('.example').forEach((button, i) => button.addEventListener('click', () => { q.value = items[i].question; })); });
+
 

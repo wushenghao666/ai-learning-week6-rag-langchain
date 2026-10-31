@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>最小 RAG 学习资料问答</title><link rel="stylesheet" href="/styles.css"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>最小 RAG 学习资料问答</title><link rel="stylesheet" href="./styles.css"></head>
 <body><main>
 <h1>最小 RAG 学习资料问答</h1>
 <p class="intro">一个尽量简单的本地 RAG 示例：先找依据，再选择是否调用生成模型。</p>
@@ -8,6 +8,7 @@
 <section class="card"><label for="q">问题</label><textarea id="q" rows="3" placeholder="例如：第四周怎样实现会话恢复？"></textarea><div class="controls"><label>片段数 <input id="k" type="number" min="1" max="8" value="4"></label><label><input id="only" type="checkbox" checked> 只检索</label><button id="ask">开始</button></div></section>
 <section class="card"><h2>示例</h2><div id="examples"></div></section>
 <section id="result" class="card"><h2>结果</h2><p>输入问题后查看检索片段和回答。</p></section>
-</main><script src="/config.js"></script><script src="/app.js"></script></body></html>
+</main><script src="./config.js"></script><script src="./app.js"></script></body></html>
+
 
 
