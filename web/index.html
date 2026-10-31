@@ -1,22 +1,13 @@
 <!doctype html>
 <html lang="zh-CN">
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>学习资料问答 · Week 6</title>
-<link rel="stylesheet" href="/styles.css">
-<header><small>PERSONAL LEARNING / WEEK 06</small><h1>把回答放回资料中检查</h1>
-<p>查询前五周的博客与 README，沿着处理记录核对回答的依据。</p><span class="tag" id="health">正在读取后端状态</span></header>
-<section class="panel"><h2>从一个例子开始</h2><p class="meta">点击示例填入问题，预期结果用于核对；点击查询后才会实际运行，模型输出可能与预期不同。</p><div id="examples" class="examples"></div><div id="expected" class="expected" hidden></div></section>
-<form class="panel" id="form">
-<label for="question">你的问题</label><textarea id="question" rows="3" maxlength="2000" required>第四周怎样实现会话恢复？</textarea>
-<div class="controls"><label>检索方式 <select id="method" aria-describedby="method-help"><option value="hybrid">组合 · RRF</option><option value="keyword">关键词 · BM25</option><option value="vector">向量 · BGE</option></select></label>
-<label>片段数 <select id="k" aria-describedby="k-help"><option>2</option><option>4</option><option selected>6</option></select></label>
-<label><input type="checkbox" id="only" checked aria-describedby="only-help">只检索</label><button id="submit">查询资料</button></div>
-<div class="help-grid"><div><h3>检索方式是什么？</h3><p id="method-help">关键词按字词匹配，适合函数名与具体数字；向量按语义相近程度排序，适合不同表述；组合合并两路排名并去掉高度重叠片段。分数越高代表该方法下更相关，不能作为答案正确率，不同方法的分数不能直接比较。</p></div>
-<div><h3>片段数是什么？</h3><p id="k-help">片段是从原文切出的短文本，当前每段最多 480 字符。片段数控制最终取回多少段；生成时这些片段组成模型上下文。更多片段可能补足依据，也会增加无关内容、输入用量和等待时间；实际返回可能少于所选数量。</p></div>
-<div><h3>只检索是什么意思？</h3><p id="only-help">勾选后仅搜索本地资料，展示片段和排名，不请求生成模型 API，也不生成回答。取消勾选后，将问题与选中资料发送到后端配置的真实模型，可能产生模型用量；请求失败会显示具体错误。</p></div></div>
-<p class="meta">本地单次问答，不保存会话。处理记录实时更新；模型使用完整响应，不展示内部思维链或伪造逐 token 过程。</p>
-</form>
-<section class="panel" id="process-panel" hidden><h2>本次处理过程</h2><p id="progress" role="status" aria-live="polite"></p><p class="meta">下面是程序实际执行的步骤、公开请求内容和脱敏返回，不是模型内部思维链。展开卡片可检查细节。</p><div id="timeline"></div></section>
-<main id="result" aria-live="polite"></main>
-<script src="/app.js"></script>
-</html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>最小 RAG 学习资料问答</title><link rel="stylesheet" href="/styles.css"></head>
+<body><main>
+<h1>最小 RAG 学习资料问答</h1>
+<p class="intro">一个尽量简单的本地 RAG 示例：先找依据，再选择是否调用生成模型。</p>
+<section class="card help"><b>怎么用</b><p>检索片段数 k 表示送入回答的资料段数量。只检索模式只显示依据，不发送模型请求；取消勾选后才会调用后端配置的 API。</p></section>
+<section class="card"><label for="q">问题</label><textarea id="q" rows="3" placeholder="例如：第四周怎样实现会话恢复？"></textarea><div class="controls"><label>片段数 <input id="k" type="number" min="1" max="8" value="4"></label><label><input id="only" type="checkbox" checked> 只检索</label><button id="ask">开始</button></div></section>
+<section class="card"><h2>示例</h2><div id="examples"></div></section>
+<section id="result" class="card"><h2>结果</h2><p>输入问题后查看检索片段和回答。</p></section>
+</main><script src="/config.js"></script><script src="/app.js"></script></body></html>
+
+
